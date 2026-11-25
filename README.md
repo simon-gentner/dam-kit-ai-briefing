@@ -4,6 +4,32 @@ A personal AI briefing, posted to Slack every morning. The agent reads AI feeds 
 
 > ⚠️ For the Community block the agent reads Slack **as you**, but never writes there. Don't share it, and bind it only to a private channel with nobody but you in it.
 
+## How it works
+
+Every weekday morning (by default 09:00 Europe/Berlin) a scheduled session runs:
+
+1. `scripts/fetch_feeds.py` collects new entries from your feeds (RSS, Atom, Hugging Face Daily Papers) and remembers what it has seen.
+2. The agent reads the last 7 days of your watched Slack channels; `scripts/slack_state.py` skips threads it already reported unless they got new replies.
+3. It scores everything against `interests.md` and the rules it learned from your feedback (`feedback.md`): topic fit, news value, usefulness.
+4. It posts the briefing as a new thread in your private channel and archives it in `~/work/briefings/`.
+
+When you reply in the thread, the agent turns your feedback into rules or interest changes, so the next briefing gets better. Everything it learns stays in `~/work/` on the agent.
+
+## Context: what DAM is and how this kit fits in
+
+[DAM](https://dam-agents.github.io/docs/) is a platform for running personal and team AI agents. Each agent lives in its own sandboxed machine with a persistent home directory, runs on a coding-agent harness (this kit uses Claude Code), and talks to you in the DAM web chat or in a Slack channel. The parts this kit relies on:
+
+- **Starter kits** ([guide](https://dam-agents.github.io/docs/guides/create-starter-kit/)): a kit is a Git repository with a `kit.yaml` at its root. When you create an agent from it, DAM copies the repository into the agent's home directory, sets up what `kit.yaml` declares, and opens a first session that follows `ONBOARDING.md`. This repository is such a kit.
+- **Connections** ([docs](https://dam-agents.github.io/docs/core-concepts/connections/)): an agent never sees your passwords or tokens. A credential gateway adds them to its requests on the wire. A **Slack Account** connection lets the agent use Slack's own MCP server with *your* permissions, one connection per workspace.
+- **Network access** ([docs](https://dam-agents.github.io/docs/core-concepts/network-access/)): outgoing traffic is limited to allowed hosts. A kit can bring its own rules; anything else needs your approval.
+- **Slack channels** ([docs](https://dam-agents.github.io/docs/integrations/slack/)): one DAM bot posts for all agents. Binding a channel to an agent lets you talk to it there.
+
+Because a Slack Account connection acts as you, the Slack MCP server offers this agent the same write tools you have (send, react, create canvases, …). This kit removes them: `scripts/install.py` denies every Slack write tool for every connected workspace, and `scripts/slack-guard.sh` blocks any Slack tool it doesn't know as read-only. The guard checks every tool call, and `install.py` refreshes the deny list on every session start, so a workspace you add later is covered too.
+
+Your personal setup never goes into this repository. It lives on the agent under `~/work/` and survives restarts and kit updates.
+
+New to DAM? Start with the [quickstart](https://dam-agents.github.io/docs/getting-started/quickstart/).
+
 ## What you need
 
 - Access to a DAM host and an account on it.
