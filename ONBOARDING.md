@@ -69,7 +69,7 @@ Show the owner every source with an error: either the network rule is missing or
 
 ## 6. Slack channels (`channels`, optional)
 
-Ask: *Which Slack channels should I watch for the Community block?* Resolve each name with `slack_search_channels` on **all** servers, show name → ID → server for confirmation and add it to `~/work/slack-channels.md`. An empty list is fine; then the Community block is left out.
+Ask: *Which Slack channels should I watch for the Community block?* Find each name per [`AGENTS.md`](AGENTS.md) → "Finding a channel by name" (every server, then the owner's channel list with all pages), take its `permalink_base`, and add it to `~/work/slack-channels.md`. Report every name you could not find, with the servers you searched. An empty list is fine; then the Community block is left out.
 
 ## 7. Write `~/work/CONFIG.md`
 

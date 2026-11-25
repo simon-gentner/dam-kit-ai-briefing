@@ -3,6 +3,11 @@
 All notable changes to this kit. The version in `VERSION` is the one installed on an agent.
 `dam kit changes <agent>` shows what an update brings; `dam kit update <agent>` takes it.
 
+## 0.3.1 (2026-11-25)
+
+- Fix: channels named during onboarding or in chat ("add channel #x") are now looked up on every connected workspace, and in the owner's own channel list with all pages when the name search finds nothing. Private channels and channels in a second workspace (e.g. `channel_not_found` on the first one) were reported as missing before.
+- `slack-channels.md` stores a `permalink_base` per channel, because on Enterprise Grid one connection spans several workspace domains. **On update:** add the column to every existing line, taken from the permalink of one message in that channel.
+
 ## 0.3.0 (2026-11-25)
 
 - Kit updates: the agent now applies a `dam kit update` itself. It takes the new definition files as they are, leaves `~/work/` untouched, re-runs `install.py` and reports what changed.
