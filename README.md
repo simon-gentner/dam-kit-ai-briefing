@@ -93,6 +93,18 @@ AlphaSignal, Import AI, Phil Schmid, Hugging Face Trending Papers. Their hosts a
 2. Restart the agent.
 3. On its next session, the agent reports the new workspace and asks whether to add it. Then ask it to watch channels there.
 
+## Updates
+
+Agents don't update on their own. When this repository has a newer version, the owner decides:
+
+```bash
+dam kit changes <agent>   # what the new version brings (commits and CHANGELOG.md)
+dam kit update <agent>    # take it: the agent applies it in a session of its own
+dam kit skip <agent>      # skip this version; the next one is offered again
+```
+
+During the update the agent replaces only the definition files. Everything under `~/work/` (your settings and history) stays as it is. If a version needs a new setting, the agent asks you for it. See [`CHANGELOG.md`](CHANGELOG.md) for what changed in each version.
+
 ## Troubleshooting
 
 | Symptom | Fix |
@@ -107,6 +119,7 @@ AlphaSignal, Import AI, Phil Schmid, Hugging Face Trending Papers. Their hosts a
 | File | Purpose |
 |---|---|
 | `kit.yaml` | Kit manifest: connections, network rules, schedule `morning-briefing` |
+| `VERSION`, `CHANGELOG.md` | Installed version and what changed in each version |
 | `AGENTS.md` | Operating manual: procedure, format, feedback, hard rules |
 | `ONBOARDING.md` | Setup on first run |
 | `templates/` | Starting values for `interests.md`, `sources.md`, `slack-channels.md`, `feedback.md` |
