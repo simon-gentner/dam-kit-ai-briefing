@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dam-agents/dam-starter-kits/main/kit.schema.json
+#
+# This repository IS the kit: the platform reads this file, creates the agent,
+# copies the repository into $HOME and opens the first session on ONBOARDING.md.
+
+schemaVersion: v1
+id: ai-briefing
+name: AI Briefing
+tagline: Your personal AI briefing every morning in Slack, from feeds and your Slack channels.
+description: >-
+  A personal news feed. Every morning the agent reads selected AI feeds (AlphaSignal,
+  Import AI, Phil Schmid, Hugging Face Trending Papers) and the Slack
+  channels you name. It scores everything against your interests and posts a briefing
+  with two blocks: News from the feeds and Community from Slack. You manage interests,
+  feeds and channels by talking to the agent, and give feedback as replies in the
+  thread; it answers in the language you write in. It only reads Slack and never
+  writes there. It acts as you: never share this agent.
+category: productivity
+icon: newspaper
+
+seed:
+  self: true
+  into: home
+
+# No `onboarding` field on purpose: the platform opens the first session with
+# "follow ONBOARDING.md" and holds the schedules until mark_onboarding_complete.
+
+connections:
+  - accepts: [slack]
+    required: false
+    note: >-
+      Your own Slack account, read-only, for the Community block. Without it there is
+      only News from feeds. You can add more workspaces later.
+
+channels:
+  - type: slack
+    note: >-
+      A private channel with only you and the DAM bot, where the briefing is posted.
+      Ambient mode off.
+
+egressPreset: trusted
+egressRules:
+  - host: alphasignal.ai
+    method: GET
+  - host: importai.substack.com
+    method: GET
+  - host: www.philschmid.de
+    method: GET
+  - host: huggingface.co
+    method: GET
+
+schedules:
+  - name: morning-briefing
+    rrule: FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;BYHOUR=9;BYMINUTE=0
+    timezone: Europe/Berlin
+    sessionMode: fresh
+    task: >-
+      Morning briefing. Read ~/work/CONFIG.md and follow AGENTS.md → "Procedure":
+      new feed entries with ~/scripts/fetch_feeds.py, the channels from
+      ~/work/slack-channels.md through their server, score against interests.md and
+      feedback.md, select, post with start_thread into the bound channel in the
+      configured language, save under ~/work/briefings/ and mark the Slack candidates.
+
+harnesses: [claude-code]
