@@ -26,12 +26,13 @@ The agent's schedules stay on hold until step 9 completes onboarding.
 python3 ~/scripts/install.py
 ```
 
-The output lists `slack_servers`, the Slack connections of this agent. If the list is empty, the Slack connection is missing, and without it there is only the News block. Ask the owner whether they want to create one:
+The output lists `slack_servers`, the Slack connections of this agent. If the list is empty, no Slack connection is granted. Without one there is only the News block. Offer **Add a workspace** (below); the owner may also skip Slack.
 
-```bash
-dam connection connect slack --name slack-<workspace>
-dam connection grant <agent> --connection slack-<workspace>
-```
+**Are all workspaces connected?** Each Slack connection covers exactly **one** workspace. A channel in a workspace without its own connection is invisible to this agent, and searching for it ends in "not found". So, when the list is not empty, name the connected servers and ask with `AskUserQuestion`: *"Are all Slack workspaces you want me to cover connected?"*
+
+- **"Yes, that's all" (Recommended):** continue.
+- **"I need to add one":** walk through **Add a workspace** (below). A new connection reaches the agent only after a restart, so stop onboarding here and tell the owner: *after the restart, come back to this chat and write "continue".* Then start again at step 1; every step is safe to repeat.
+- **"I'm not sure":** explain how to tell: in Slack, the workspace switcher shows every workspace they are in, and a message link of a channel shows its workspace in the domain (`https://<workspace>.slack.com/archives/…`). A channel that later cannot be found is the typical sign of a missing connection.
 
 If the script reports "Not the Claude Code harness", tell the owner clearly that the Slack write tools are **not** blocked, and recommend Claude Code.
 
@@ -69,7 +70,7 @@ Show the owner every source with an error: either the network rule is missing or
 
 ## 6. Slack channels (`channels`, optional)
 
-Ask: *Which Slack channels should I watch for the Community block?* Find each name per [`AGENTS.md`](AGENTS.md) → "Finding a channel by name" (every server, then the owner's channel list with all pages), take its `permalink_base`, and add it to `~/work/slack-channels.md`. Report every name you could not find, with the servers you searched. An empty list is fine; then the Community block is left out.
+Ask: *Which Slack channels should I watch for the Community block?* Find each name per [`AGENTS.md`](AGENTS.md) → "Finding a channel by name" (every server, then the owner's channel list with all pages), take its `permalink_base`, and add it to `~/work/slack-channels.md`. Report every name you could not find, with the servers you searched. If the owner says such a channel is in another workspace, guide them through **Add a workspace** (below) and add the channel after the restart. An empty list is fine; then the Community block is left out.
 
 ## 7. Write `~/work/CONFIG.md`
 
@@ -117,10 +118,15 @@ Then call `mark_onboarding_complete` and summarize briefly:
 
 ## Add a workspace (any time)
 
-```bash
-dam connection connect slack --name slack-<workspace>
-dam connection grant <agent> --connection slack-<workspace>
-dam agent restart <agent>
-```
+Guide the owner through these steps, with this agent's name filled in for `<agent>`:
 
-After that, the SessionStart hook reports the new server. Run the "workspaces" part of step 2 for it, add the row to `## workspaces` and confirm it in one sentence.
+1. **Find the workspace:** in Slack, open a channel of that workspace and copy a message link; the domain is the workspace (`https://<workspace>.slack.com/…`).
+2. **Create the connection:**
+   - Web app: Settings → Connections → **Add connection** → Apps → **Slack Account** → **New**. In Slack's login dialog, pick that workspace in the top-right corner.
+   - CLI: `dam connection connect slack --name slack-<workspace>`, and pick the workspace in the login dialog.
+3. **Grant it to this agent:** in the web app under the agent's connections, or `dam connection grant <agent> --connection slack-<workspace>`.
+4. **Restart the agent:** in the web app, or `dam agent restart <agent>`.
+
+If Slack's login dialog does not offer the workspace, the DAM Slack app is not installed there; only that workspace's admins can add it.
+
+After the restart, the SessionStart hook reports the new server. Run the "workspaces" part of step 2 for it, add the row to `## workspaces` and confirm it in one sentence. Ask whether to look up any channels there again that were not found before. The hook installs the write block for the new server itself.
