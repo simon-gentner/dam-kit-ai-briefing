@@ -4,7 +4,9 @@ Sets up a new ai-briefing agent, **once per agent**. Every step is safe to repea
 
 Skip if `~/.ai-briefing-onboarded` exists. Then only [`AGENTS.md`](AGENTS.md) applies, unless the owner wants to **add a workspace** (below).
 
-Talk to the owner in the language they write in, a few questions per message, each with a suggestion they can accept.
+Talk to the owner in the language they write in.
+
+**Ask through the harness.** Every question with fixed answers (yes/no, a choice, a pick from a list) goes through the harness's question tool, `AskUserQuestion` on Claude Code: the web chat shows it as clickable options, with "Other" for free text. Put your suggestion first and mark it "(Recommended)". The tool takes up to 4 questions per call and 2–4 options per question; for longer lists, see the paging rule where a step needs it. Ask open questions (names, topics, URLs) as plain text. If the tool is unavailable or fails (e.g. in a Slack thread), ask the same thing as plain text with a numbered list.
 
 **Checklist first:** call `set_onboarding_checklist` with these steps and tick each one with `complete_onboarding_step`:
 
