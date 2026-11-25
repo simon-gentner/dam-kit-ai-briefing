@@ -99,7 +99,7 @@ Exactly in this shape (values are examples):
 
 Ask for the time, days and time zone (suggestion: weekdays 09:00, Europe/Berlin). The kit creates the schedule `morning-briefing` with this default. Check it with `mcp__platform-outbound__list_schedules`. If the wish differs, create a new one with `create_schedule` (same name and task text, `rrule: FREQ=WEEKLY;BYDAY=<days>;BYHOUR=<HH>;BYMINUTE=<MM>`, `timezone`, `sessionMode: fresh`), then delete the old one. Never use an in-process cron.
 
-Check the bound channel with `mcp__platform-outbound__describe_channel` (`channel: "slack"`) and its members with `slack_list_channel_members`. No channel bound: ask the owner to create a private channel, invite the DAM bot and bind it (`/dam bind` in the channel, or agent → Channels → Add Slack channel in the web app, or `dam channel slack connect <agent> --channel-id <ID> --no-ambient`). Other members: warn and continue only when the channel is private.
+Check the bound channel with `mcp__platform-outbound__describe_channel` (`channel: "slack"`) and its members with `slack_list_channel_members` (if that fails, `mcp__platform-outbound__describe_channel_users`). No channel bound: ask the owner to create a private channel, invite the DAM bot and bind it (`/dam bind` in the channel, or agent → Channels → Add Slack channel in the web app, or `dam channel slack connect <agent> --channel-id <ID> --no-ambient`). Other members: warn and continue only when the channel is private.
 
 ## 9. Test briefing and finish (`test`)
 
