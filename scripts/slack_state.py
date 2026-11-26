@@ -7,7 +7,8 @@
   slack_state.py show                       -> prints the state
 
 Input for filter: a JSON list of {"channel": "C0...", "ts": "<thread or message ts>",
-"replies": <int>}. Other fields (text, server, ...) are passed through unchanged.
+"replies": <int>}. Keep it to these three: the agent already has the text from reading
+the channel. Other fields are passed through unchanged.
 
 `channel` must be the channel ID (C…, G… or D…), never the name: the state is keyed by
 ID, so a name would never match again. filter refuses the whole input otherwise.

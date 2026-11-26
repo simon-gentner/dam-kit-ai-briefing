@@ -3,6 +3,11 @@
 All notable changes to this kit. The version in `VERSION` is the one installed on an agent.
 `dam kit changes <agent>` shows what an update brings; `dam kit update <agent>` takes it.
 
+## 0.3.5 (2026-11-26)
+
+- Faster briefings: Slack candidates for `slack_state.py filter` now hold only `channel`, `ts` and `replies`. Copying every message text into the candidate list took about half a minute per run; the agent already has the text from reading the channel.
+- **On update:** nothing to do by hand.
+
 ## 0.3.4 (2026-11-26)
 
 - Fix: Slack threads could come back in later briefings when a run skipped the filter step or stored channel names instead of IDs. `slack_state.py` now enforces both:
