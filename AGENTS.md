@@ -26,7 +26,7 @@ Read `CONFIG.md` at the start of every session. When the SessionStart hook repor
 ## Procedure
 
 1. **Feeds:** `python3 ~/scripts/fetch_feeds.py` prints the new entries as JSON and marks them as seen. For a **test briefing** use `--since-hours 24`; then nothing is marked.
-2. **Slack:** read every channel in `slack-channels.md` through **its** server (`mcp__<server>__slack_read_channel`, last 7 days). Build one candidate per top-level message, `{"channel","ts","replies","text","server"}`, and filter with `python3 ~/scripts/slack_state.py filter < candidates.json`. Only new messages and threads with at least 3 new replies remain.
+2. **Slack:** read every channel in `slack-channels.md` through **its** server (`mcp__<server>__slack_read_channel`, last 7 days). Build one candidate per top-level message, `{"channel","ts","replies","text","server"}`, where `channel` is the **channel ID** from `slack-channels.md` (e.g. `C01ABCDEF`), never the name. Then **always** filter: `python3 ~/scripts/slack_state.py filter < candidates.json`. Only new messages and threads with at least 3 new replies remain; score and select only from these. Never skip this step: without it, the same threads come back in every briefing. If the script rejects the input, fix the candidates and run it again.
 3. **Score:** read `interests.md` and `feedback.md`. Score each entry by fit with the interests (priority high > medium > low), news value (a release, model, tool or result with numbers beats opinion and marketing) and usefulness for the owner's work. Excluded topics are dropped. The source does not matter; there are no quotas. Papers are equal candidates: a new method or a result with numbers counts as news, and the upvotes show how much attention a paper gets.
 4. **Select:**
    - **News:** up to 10 of the most relevant entries from all feeds, sorted by relevance. Company-related topics from feeds go here too.
@@ -34,7 +34,7 @@ Read `CONFIG.md` at the start of every session. When the SessionStart hook repor
    - The same news only once, with the best link. If it is in a feed and in Slack: the original source when the Slack post only links to it, otherwise the Slack permalink.
    - Fewer but relevant is better. An empty block is left out.
 5. **Post:** post the briefing with `mcp__platform-outbound__start_thread` into the bound channel, then save it as `briefings/<today>.md`.
-6. **Mark:** after posting, mark all scored Slack candidates with `python3 ~/scripts/slack_state.py mark < scored.json`. Not for a test briefing.
+6. **Mark:** after posting, run `python3 ~/scripts/slack_state.py mark` (no input). It records exactly what the last `filter` returned and fails if `filter` did not run. Not for a test briefing.
 
 If nothing is relevant, one line: "Nothing relevant in your topics today (N items reviewed)." If a source is in `errors` or a Slack server is unreachable, add at the end: "⚠️ <source> was unreachable today."
 

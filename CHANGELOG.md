@@ -3,6 +3,13 @@
 All notable changes to this kit. The version in `VERSION` is the one installed on an agent.
 `dam kit changes <agent>` shows what an update brings; `dam kit update <agent>` takes it.
 
+## 0.3.4 (2026-11-26)
+
+- Fix: Slack threads could come back in later briefings when a run skipped the filter step or stored channel names instead of IDs. `slack_state.py` now enforces both:
+  - `filter` accepts only channel IDs and rejects the whole input otherwise.
+  - `filter` keeps its result as the pending set, and `mark` takes no input: it records exactly that set and fails when `filter` did not run.
+- **On update:** nothing to do by hand. State keyed by channel name is converted to IDs on the next run, using `~/work/slack-channels.md`. Run `mark` without input from now on.
+
 ## 0.3.3 (2026-11-25)
 
 - Fix: Claude Code's auto-mode classifier sometimes refused harmless Slack reads (seen with `slack_list_channel_members`). `install.py` now also puts every Slack **read** tool into `permissions.allow` for every connected workspace. Write tools stay denied and `slack-guard.sh` still checks every call. **On update:** run `python3 ~/scripts/install.py`; it takes effect from the next session.
